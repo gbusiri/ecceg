@@ -16,12 +16,10 @@ public class Ecceg {
     private static final int koblitz = 20;
     
     public static void encode(String plain, ArrayList<Point> Pm) {
-        ArrayList<String> listString = new ArrayList<>();
-        
-        for (int i = 0; i < plain.length(); i+=25) {
+        for (int i = 0; i < plain.length(); i+=10) {
             BigInteger m;
-            if (i+25 <= plain.length())
-                m = new BigInteger(plain.substring(i, i+25).getBytes());
+            if (i+10 <= plain.length())
+                m = new BigInteger(plain.substring(i, i+10).getBytes());
             else
                 m = new BigInteger(plain.substring(i, plain.length()).getBytes());
             
@@ -59,7 +57,10 @@ public class Ecceg {
     }
     
     public static void decode(String cipher, ArrayList<Point> Pm) {
-        
+        for (int i = 0; i < Pm.size(); i++) {
+            BigInteger result = (Pm.get(i).getX().subtract(BigInteger.valueOf(1))).divide(BigInteger.valueOf(koblitz));
+            cipher += result.toByteArray();
+        }
     }
     
     public static BigInteger calculatePm_Y(BigInteger x, BigInteger a, BigInteger b, BigInteger p) {
