@@ -12,10 +12,10 @@ import java.math.BigInteger;
  * @author Moch Ginanjar Busiri
  */
 public class Point {
-    private BigInteger a;
-    private BigInteger b;
-    private BigInteger p;
-    private BigInteger INF = new BigInteger("-1");
+    public static final BigInteger a = BigInteger.valueOf(12312);
+    public static final BigInteger b = BigInteger.valueOf(5346345);;
+    public static final BigInteger p = (BigInteger.valueOf(2).pow(192).subtract(BigInteger.valueOf(2).pow(64))).subtract(BigInteger.valueOf(1));
+    public static final BigInteger INF = new BigInteger("-1");
     
     private final BigInteger x;
     private final BigInteger y;
@@ -58,13 +58,13 @@ public class Point {
     }
     
     public Point multiplyPoint(BigInteger k, Point point) {
-      if (k == BigInteger.ZERO)
-        return new Point(INF, INF);
-      if (k == BigInteger.ONE)
-        return point;
-      Point point2 = this.multiplyPoint(k.divide(BigInteger.valueOf(2)), new Point(resultDouble_X(point, point), resultDouble_Y(point, point)));
-      if (k.mod(BigInteger.valueOf(2)).equals(BigInteger.ONE))
-        point2 = new Point(resultAdd_X(point2, point), resultAdd_Y(point2, point));
-      return point2;
+        if (k.equals(BigInteger.ZERO))
+            return new Point(INF, INF);
+        if (k.equals(BigInteger.ONE))
+            return point;
+        Point point2 = this.multiplyPoint(k.divide(BigInteger.valueOf(2)), new Point(resultDouble_X(point, point), resultDouble_Y(point, point)));
+        if (k.mod(BigInteger.valueOf(2)).equals(BigInteger.ONE))
+            point2 = new Point(resultAdd_X(point2, point), resultAdd_Y(point2, point));
+        return point2;
     }
 }
