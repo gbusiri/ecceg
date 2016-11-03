@@ -33,38 +33,43 @@ public class Point {
         return y;
     }
     
-    public BigInteger gradientAdd(Point P, Point Q) {
+    public static BigInteger gradientAdd(Point P, Point Q) {
         return (P.getY().subtract(Q.getY()).modInverse(P.getX().subtract(Q.getX())));
     }
     
-    public BigInteger resultAdd_X(Point P, Point Q) {
+    public static BigInteger resultAdd_X(Point P, Point Q) {
         return ((gradientAdd(P, Q).pow(2)).subtract(P.getX())).subtract(Q.getX());
     }
     
-    public BigInteger resultAdd_Y(Point P, Point Q) {
+    public static BigInteger resultAdd_Y(Point P, Point Q) {
         return (gradientAdd(P, Q).multiply(P.getX().subtract(resultAdd_X(P, Q)))).subtract(P.getY());
     }
     
-    public BigInteger gradientDouble(Point P, Point Q) {
+    public static BigInteger gradientDouble(Point P, Point Q) {
         return ((P.getX().pow(2).multiply(new BigInteger("3"))).add(a)).modInverse(P.getY().multiply(new BigInteger("2")));
     }
     
-    public BigInteger resultDouble_X(Point P, Point Q) {
+    public static BigInteger resultDouble_X(Point P, Point Q) {
         return (gradientDouble(P, Q).pow(2)).subtract(P.getX().multiply(new BigInteger("2")));
     }
     
-    public BigInteger resultDouble_Y(Point P, Point Q) {
+    public static BigInteger resultDouble_Y(Point P, Point Q) {
         return (gradientDouble(P, Q).multiply(P.getX().subtract(resultDouble_X(P, Q)))).subtract(P.getY());
     }
     
-    public Point multiplyPoint(BigInteger k, Point point) {
+    public static Point multiplyPoint(BigInteger k, Point point) {
         if (k.equals(BigInteger.ZERO))
             return new Point(INF, INF);
         if (k.equals(BigInteger.ONE))
             return point;
-        Point point2 = this.multiplyPoint(k.divide(BigInteger.valueOf(2)), new Point(resultDouble_X(point, point), resultDouble_Y(point, point)));
+        Point point2 = multiplyPoint(k.divide(BigInteger.valueOf(2)), new Point(resultDouble_X(point, point), resultDouble_Y(point, point)));
         if (k.mod(BigInteger.valueOf(2)).equals(BigInteger.ONE))
             point2 = new Point(resultAdd_X(point2, point), resultAdd_Y(point2, point));
         return point2;
+    }
+    
+    public static Point addPoint(Point P, Point Q) {
+        Point result = new Point(resultAdd_X(P, Q), resultAdd_Y(P, Q));
+        return result;
     }
 }

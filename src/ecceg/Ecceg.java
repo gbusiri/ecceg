@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public class Ecceg {
     private static final int koblitz = 20;
     
-    public static void encode(String plain, ArrayList<Point> listPoint) {
+    public static void encode(String plain, ArrayList<Point> Pm) {
         ArrayList<String> listString = new ArrayList<>();
         
         for (int i = 0; i < plain.length(); i+=25) {
@@ -33,19 +33,32 @@ public class Ecceg {
                 x = (m.multiply(BigInteger.valueOf(koblitz))).add(BigInteger.valueOf(it));
                 y = calculatePm_Y(x, Point.a, Point.b, Point.p);
             }   
-            listPoint.add(new Point(x, y));
+            Pm.add(new Point(x, y));
         }
     }
     
-    public static void encrypt(ArrayList<Point> listPoint) {
-        
+    public static void encrypt(ArrayList<Point> Pm, Point Pb, Point kPb, ArrayList<Pair<Point, Point> > C, BigInteger y) {
+        for (int i = 0; i < Pm.size(); i++) {
+            Point param1 = Point.multiplyPoint(y, Pb);
+            Point param2 = Point.addPoint(Pm.get(i), Point.multiplyPoint(y, kPb));
+            C.add(new Pair(param1, param2));
+        }
     }
     
-    public static void decode() {
-        
+    public static void decrypt(ArrayList<Pair<Point, Point> > C, BigInteger key, ArrayList<Point> Pm) {
+        for (int i = 0; i < C.size(); i++) {
+            Point C1 = C.get(i).getFirst();
+            Point C2 = C.get(i).getSecond();
+            
+            Point temp1 = new Point(C1.getX(), C1.getY());
+            Point temp2 = Point.multiplyPoint(key, temp1);
+            
+            Point C3 = new Point(C2.getX().subtract(temp2.getX()), C2.getY().subtract(temp2.getY()));
+            Pm.add(C3);
+        }
     }
     
-    public static void decrypt() {
+    public static void decode(String cipher, ArrayList<Point> Pm) {
         
     }
     
