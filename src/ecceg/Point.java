@@ -5,6 +5,7 @@
  */
 package ecceg;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 
 /**
@@ -71,5 +72,10 @@ public class Point {
     public static Point addPoint(Point P, Point Q) {
         Point result = new Point(resultAdd_X(P, Q), resultAdd_Y(P, Q));
         return result;
+    }
+    
+    @Override
+    public String toString(){
+        return x.toString() + " " + y.toString();
     }
 }
