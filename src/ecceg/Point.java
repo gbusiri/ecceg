@@ -114,6 +114,6 @@ public class Point {
     
     @Override
     public String toString(){
-        return x.toString() + " " + y.toString();
+        return x.toString() + "," + y.toString();
     }
 }
