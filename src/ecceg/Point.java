@@ -35,20 +35,22 @@ public class Point {
     }
     
     public static BigInteger gradientAdd(Point P, Point Q) {
-        return (P.getY().subtract(Q.getY()).modInverse(P.getX().subtract(Q.getX())));
+        return (P.getY().subtract(Q.getY()).multiply(P.getX().subtract(Q.getX()).modInverse(p))).mod(p);
     }
     
     public static BigInteger resultAdd_X(Point P, Point Q) {
-        return ((gradientAdd(P, Q).pow(2)).subtract(P.getX())).subtract(Q.getX());
+        return ((gradientAdd(P, Q).pow(2)).subtract(P.getX())).subtract(Q.getX()).mod(p);
     }
     
     public static BigInteger resultAdd_Y(Point P, Point Q) {
-        return (gradientAdd(P, Q).multiply(P.getX().subtract(resultAdd_X(P, Q)))).subtract(P.getY());
+        return (gradientAdd(P, Q).multiply(P.getX().subtract(resultAdd_X(P, Q)))).subtract(P.getY()).mod(p);
     }
     
     public static BigInteger gradientDouble(Point P) {
+        System.out.println("gradient");
         BigInteger param1 = P.getX().pow(2).multiply(new BigInteger("3"));
         BigInteger param2 = P.getY().multiply(new BigInteger("2"));
+        System.out.println("done dradient");
         return param1.add(a).multiply(param2.modInverse(p));
 //        if (param1.gcd(param2).equals(BigInteger.ONE)) {
 //            System.out.println("relative prima");
@@ -62,14 +64,17 @@ public class Point {
     }
     
     public static BigInteger resultDouble_X(Point P) {
-        return (gradientDouble(P).pow(2)).subtract(P.getX().multiply(new BigInteger("2")));
+        System.out.println("doubleX");
+        return (gradientDouble(P).pow(2)).subtract(P.getX().multiply(new BigInteger("2"))).mod(p);
     }
     
     public static BigInteger resultDouble_Y(Point P) {
-        return (gradientDouble(P).multiply(P.getX().subtract(resultDouble_X(P)))).subtract(P.getY());
+        System.out.println("doubleY");
+        return (gradientDouble(P).multiply(P.getX().subtract(resultDouble_X(P)))).subtract(P.getY()).mod(p);
     }
     
     public static Point multiplyPoint(BigInteger k, Point point) {
+        System.out.println("k = "+k);
         if (k.equals(BigInteger.ZERO))
             return new Point(INF, INF);
         if (k.equals(BigInteger.ONE))
@@ -78,22 +83,28 @@ public class Point {
         Point point2;
         if (point.getY().compareTo(BigInteger.valueOf(0)) != 0)
         {
-            System.out.println("asusasu = "+point.getY());
-            point2 = multiplyPoint(k.divide(BigInteger.valueOf(2)), new Point(resultDouble_X(point), resultDouble_Y(point)));
+            System.out.println("point Y = "+point.getY());
+            BigInteger x = resultDouble_X(point);
+            System.out.println("x = "+ x);
+            BigInteger y = resultDouble_Y(point);
+            System.out.println("y = "+y);
+            point2 = multiplyPoint(k.divide(BigInteger.valueOf(2)), new Point(x, y));
+            System.out.println("usausa");
         }
         else
         {
             System.out.println("jancok");
             point2 = new Point(INF, INF);
         }
-        
+        System.out.println("apa gitu");
         if (k.mod(BigInteger.valueOf(2)).equals(BigInteger.ONE)) {
+            System.out.println("kkkkkkkkkkkkkkk");
             if (point.getX().compareTo(BigInteger.valueOf(0)) != 0)
                 point2 = new Point(resultAdd_X(point2, point), resultAdd_Y(point2, point));
             else
                 point2 = new Point(INF, INF);
         }
-            
+        System.out.println("zzzzzzzzzzzzzzz");    
         return point2;
     }
     

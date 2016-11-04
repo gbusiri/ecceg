@@ -154,6 +154,7 @@ public class Main {
         Ecceg.decrypt(cipherText, privateKey, p);
         String plainFile = "";
         Ecceg.decode(plainFile, p);
+        System.out.println("PLAINFILE = "+plainFile);
         long stopTime = System.nanoTime();
         System.out.println("Waktu dekripsi:" + String.valueOf((stopTime-startTime)/1000000) + "ms");
 
@@ -179,7 +180,6 @@ public class Main {
             Scanner sc = new Scanner(System.in);
             System.out.println("Bangkitkan kunci? (y/n)");
             boolean generateKey = sc.nextLine().equals("y");
-            System.out.println("lskdjflsd");
             if (generateKey){ // Generate kunci
                 System.out.println("Kunci privat: ");
                 privateKey = new BigInteger(sc.nextLine());
