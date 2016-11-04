@@ -22,8 +22,8 @@ public class Point {
     private final BigInteger y;
 
     public Point(BigInteger x, BigInteger y) {
-        this.x = x;
-        this.y = y;
+        this.x = bePositive(x, p);
+        this.y = bePositive(y, p);
     }
 
     public BigInteger getX() {
@@ -46,16 +46,27 @@ public class Point {
         return (gradientAdd(P, Q).multiply(P.getX().subtract(resultAdd_X(P, Q)))).subtract(P.getY());
     }
     
-    public static BigInteger gradientDouble(Point P, Point Q) {
-        return ((P.getX().pow(2).multiply(new BigInteger("3"))).add(a)).modInverse(P.getY().multiply(new BigInteger("2")));
+    public static BigInteger gradientDouble(Point P) {
+        BigInteger param1 = P.getX().pow(2).multiply(new BigInteger("3"));
+        BigInteger param2 = P.getY().multiply(new BigInteger("2"));
+        return param1.add(a).multiply(param2.modInverse(p));
+//        if (param1.gcd(param2).equals(BigInteger.ONE)) {
+//            System.out.println("relative prima");
+//            return param1.add(a).modInverse(param2);
+//        }
+//        else {
+//            System.out.println("tidak rel prima");
+//            return BigInteger.ZERO;
+//        }
+            
     }
     
-    public static BigInteger resultDouble_X(Point P, Point Q) {
-        return (gradientDouble(P, Q).pow(2)).subtract(P.getX().multiply(new BigInteger("2")));
+    public static BigInteger resultDouble_X(Point P) {
+        return (gradientDouble(P).pow(2)).subtract(P.getX().multiply(new BigInteger("2")));
     }
     
-    public static BigInteger resultDouble_Y(Point P, Point Q) {
-        return (gradientDouble(P, Q).multiply(P.getX().subtract(resultDouble_X(P, Q)))).subtract(P.getY());
+    public static BigInteger resultDouble_Y(Point P) {
+        return (gradientDouble(P).multiply(P.getX().subtract(resultDouble_X(P)))).subtract(P.getY());
     }
     
     public static Point multiplyPoint(BigInteger k, Point point) {
@@ -63,15 +74,42 @@ public class Point {
             return new Point(INF, INF);
         if (k.equals(BigInteger.ONE))
             return point;
-        Point point2 = multiplyPoint(k.divide(BigInteger.valueOf(2)), new Point(resultDouble_X(point, point), resultDouble_Y(point, point)));
-        if (k.mod(BigInteger.valueOf(2)).equals(BigInteger.ONE))
-            point2 = new Point(resultAdd_X(point2, point), resultAdd_Y(point2, point));
+        
+        Point point2;
+        if (point.getY().compareTo(BigInteger.valueOf(0)) != 0)
+        {
+            System.out.println("asusasu = "+point.getY());
+            point2 = multiplyPoint(k.divide(BigInteger.valueOf(2)), new Point(resultDouble_X(point), resultDouble_Y(point)));
+        }
+        else
+        {
+            System.out.println("jancok");
+            point2 = new Point(INF, INF);
+        }
+        
+        if (k.mod(BigInteger.valueOf(2)).equals(BigInteger.ONE)) {
+            if (point.getX().compareTo(BigInteger.valueOf(0)) != 0)
+                point2 = new Point(resultAdd_X(point2, point), resultAdd_Y(point2, point));
+            else
+                point2 = new Point(INF, INF);
+        }
+            
         return point2;
     }
     
     public static Point addPoint(Point P, Point Q) {
         Point result = new Point(resultAdd_X(P, Q), resultAdd_Y(P, Q));
-        return result;
+        if (P.getX().compareTo(BigInteger.valueOf(0)) != 0)
+            return result;
+        else
+            return new Point(INF, INF);
+    }
+    
+    private BigInteger bePositive(BigInteger a, BigInteger mod) {
+        while ( a.compareTo(BigInteger.valueOf(0)) == -1 ) {
+            a = a.add(mod);
+        }
+        return a;
     }
     
     @Override

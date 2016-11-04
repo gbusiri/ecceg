@@ -141,6 +141,7 @@ public class Main {
      */
     public static void main(String[] args) {
         try {
+            System.out.println("hahah");
             Point publicKey;
             BigInteger privateKey;
             Point basePoint = new Point(new BigInteger("1"), new BigInteger("2")); // Base point? harus pake apa?
@@ -148,7 +149,7 @@ public class Main {
             Scanner sc = new Scanner(System.in);
             System.out.println("Bangkitkan kunci? (y/n)");
             boolean generateKey = sc.nextLine().equals("y");
-            
+            System.out.println("lskdjflsd");
             if (generateKey){ // Generate kunci
                 System.out.println("Kunci privat: ");
                 privateKey = new BigInteger(sc.nextLine());
