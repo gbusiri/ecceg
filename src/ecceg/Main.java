@@ -115,8 +115,8 @@ public class Main {
         byte[] plainfile = loadFile(sc.nextLine());
         long fileSize = plainfile.length;
         System.out.println("Ukuran plainteks: " + String.valueOf(fileSize) + " bytes");
-        printFile(plainfile);
-        printFileHex(plainfile);
+//        printFile(plainfile);
+//        printFileHex(plainfile);
 
         System.out.println("Sedang mengenkripsi...");
         ArrayList<Point> cipherText = new ArrayList();
@@ -135,8 +135,8 @@ public class Main {
         byte[] reloadEncrypted = loadFile(output);
         fileSize = reloadEncrypted.length;
         System.out.println("Ukuran cipherteks: " + String.valueOf(fileSize) + " bytes");
-        printFile(reloadEncrypted);
-        printFileHex(reloadEncrypted);  
+//        printFile(reloadEncrypted);
+//        printFileHex(reloadEncrypted);  
     }
     
     public static void decryptAndDecode(BigInteger privateKey) throws IOException{
@@ -162,7 +162,7 @@ public class Main {
         System.out.println("file output: ");
         String output = sc.nextLine();
         PrintWriter writer = new PrintWriter(output);
-        writer.println(plainFile);
+        writer.print(plainFile);
         writer.close();
         System.out.println("Isi file:");
         printFile(plainFile.getBytes(Charset.forName("UTF-8")));

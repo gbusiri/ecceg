@@ -49,10 +49,10 @@ public class Ecceg {
             Point C1 = C.get(i).getFirst();
             Point C2 = C.get(i).getSecond();
             
-            Point temp1 = new Point(C1.getX(), C1.getY());
+            Point temp1 = new Point(C1.getX(), C1.getY().multiply(BigInteger.valueOf(-1)));
             Point temp2 = Point.multiplyPoint(key, temp1);
             
-            Point C3 = new Point(C2.getX().subtract(temp2.getX()), C2.getY().subtract(temp2.getY()));
+            Point C3 = Point.addPoint(C2, temp2);
             Pm.add(C3);
         }
     }
