@@ -39,29 +39,31 @@ public class Main {
     
     public static void writePoint(Point p, String location) throws FileNotFoundException{
         PrintWriter out = new PrintWriter(location);
-        out.println(p.toString());
+        out.print(p.toString());
         out.close();
     }
     
     public static void writeBigInt(BigInteger data, String location) throws IOException{
         PrintWriter out = new PrintWriter(location);
-        out.println(data.toString());
+        out.print(data.toString());
         out.close();
     }
     
     public static void writeArrayOfPoint(ArrayList<Point> points, String location) throws FileNotFoundException{
         PrintWriter out = new PrintWriter(location);
-        for (Point point:points){
-            out.println(point.toString()); 
+        for (int i = 0; i<points.size()-1;i++){
+            out.println(points.get(i).toString()); 
         }
+        out.print(points.get(points.size()-1).toString());
         out.close();
     }
     
     public static void writeArrayOfPairOfPoint(ArrayList<Pair<Point, Point>> pairs, String location) throws FileNotFoundException{
         PrintWriter out = new PrintWriter(location);
-        for (Pair<Point,Point> pair:pairs){
-            out.println(pair.toString()); 
+        for (int i=0;i<pairs.size()-1;i++){
+            out.println(pairs.get(i).toString()); 
         }
+        out.print(pairs.get(pairs.size() - 1).toString());
         out.close();
     }
     
@@ -109,7 +111,7 @@ public class Main {
     
     public static void encodeAndEncrypt(Point basePoint, Point publicKey, BigInteger privateKey) throws IOException{
         Scanner sc = new Scanner(System.in);
-        System.out.println("Alamat file yang akan dienkripsi:");
+        System.out.println("file yang akan dienkripsi:");
         byte[] plainfile = loadFile(sc.nextLine());
         long fileSize = plainfile.length;
         System.out.println("Ukuran plainteks: " + String.valueOf(fileSize) + " bytes");
@@ -125,7 +127,7 @@ public class Main {
         long stopTime = System.nanoTime();
         System.out.println("Waktu enkripsi:" + String.valueOf((stopTime-startTime)/1000000) + "ms");
 
-        System.out.println("Alamat file output: ");
+        System.out.println("file output: ");
         String output = sc.nextLine();
         
         writeArrayOfPairOfPoint(resultArr, output);
@@ -139,8 +141,9 @@ public class Main {
     
     public static void decryptAndDecode(BigInteger privateKey) throws IOException{
         Scanner sc = new Scanner(System.in);
-        System.out.println("Alamat file yang akan didekripsi:");
+        System.out.println("file yang akan didekripsi:");
         byte[] cipherfile = loadFile(sc.nextLine());
+        
         long fileSize = cipherfile.length;
         System.out.println("Ukuran cipherteks: " + String.valueOf(fileSize) + " bytes");
         System.out.println("Isi file: ");
@@ -152,16 +155,15 @@ public class Main {
         long startTime = System.nanoTime();
         ArrayList<Point> p = new ArrayList<>();
         Ecceg.decrypt(cipherText, privateKey, p);
-        String plainFile = "";
-        Ecceg.decode(plainFile, p);
-        System.out.println("PLAINFILE = "+plainFile);
+        String plainFile = Ecceg.decode(p);
         long stopTime = System.nanoTime();
         System.out.println("Waktu dekripsi:" + String.valueOf((stopTime-startTime)/1000000) + "ms");
 
-        System.out.println("Alamat file output: ");
+        System.out.println("file output: ");
         String output = sc.nextLine();
         PrintWriter writer = new PrintWriter(output);
         writer.println(plainFile);
+        writer.close();
         System.out.println("Isi file:");
         printFile(plainFile.getBytes(Charset.forName("UTF-8")));
         printFileHex(plainFile.getBytes(Charset.forName("UTF-8")));
@@ -185,21 +187,21 @@ public class Main {
                 privateKey = new BigInteger(sc.nextLine());
                 publicKey = Point.multiplyPoint(privateKey, basePoint);
                 System.out.println("Kunci publik berhasil dibuat dari kunci privat!");
-                System.out.println("alamat kunci privat:");
+                System.out.println("kunci privat:");
                 writeBigInt(privateKey, sc.nextLine());
-                System.out.println("alamat kunci publik:");
+                System.out.println("kunci publik:");
                 String publicKeyLocation = sc.nextLine();
                 writePoint(publicKey, publicKeyLocation);
             }
             else{ // Load kunci dari file
                 System.out.println("Memuat file kunci...");
-                System.out.println("alamat kunci privat:");
+                System.out.println("kunci privat:");
                 String privateKeyLocation = sc.nextLine();
                 String privateKeyFile = new String(loadFile(privateKeyLocation),"UTF-8");
                 privateKey = new BigInteger(privateKeyFile);
-                System.out.println("alamat kunci publik:");
+                System.out.println("kunci publik:");
                 String publicKeyLocation = sc.nextLine();
-                String publicKeyFile[] = new String(loadFile(publicKeyLocation), "UTF-8").split(" ");
+                String publicKeyFile[] = new String(loadFile(publicKeyLocation), "UTF-8").split(",");
                 publicKey = new Point(new BigInteger(publicKeyFile[0]), new BigInteger(publicKeyFile[1]));
             }
             
@@ -209,7 +211,6 @@ public class Main {
                 encodeAndEncrypt(basePoint, publicKey, privateKey);
             }
             else {
-                //decrypt
                 decryptAndDecode(privateKey);
             }
         } catch (IOException ex) {
